@@ -16,7 +16,7 @@
 		</div>
 	{/if}
 	{#each exchanges as exhangeId}
-		<div class="col-md-3">
+		<div class="col-md-4">
 			<Card>
 				<div class="d-flex">
 					<PlayerCard />

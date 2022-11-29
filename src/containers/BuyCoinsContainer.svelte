@@ -20,13 +20,14 @@
 	<div class="d-flex justify-content-around">
 		{#each [1, 5, 15] as num}
 			<div class="">
-				<button type="button" class="btn btn-outline-primary" on:click={() => buy(num)}
+				<button type="button" class="btn btn-primary" on:click={() => buy(num)}
 					>Comprar {num}
 				</button>
 			</div>
 		{/each}
 	</div>
-	<div class="d-flex">
+	<br />
+	<div class="d-flex gap-2">
 		<input
 			type="number"
 			placeholder="Ingresar una cantidad personalizada"
@@ -34,7 +35,11 @@
 			bind:value={customAmount}
 			bind:this={customAmountInput}
 		/>
-		<button type="button" class="btn btn-primary" on:click={() => buy(customAmount)}>
+		<button
+			type="button"
+			class="btn btn-outline-primary"
+			on:click={() => buy(Number(customAmount))}
+		>
 			Comprar
 		</button>
 	</div>

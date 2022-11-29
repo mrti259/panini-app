@@ -1,5 +1,7 @@
 <script lang="ts">
 	import Card from 'app/components/Card.svelte';
+	import Modal from 'app/components/Modal.svelte';
+	import DisplayStickersContainer from './DisplayStickersContainer.svelte';
 	import logo from 'assets/qatar_logo.jpg';
 	import { state } from 'app/state';
 
@@ -31,3 +33,7 @@
 		</div>
 	{/each}
 </div>
+
+<Modal id="modalDisplayNewStickers" title="Nuevas figuritas">
+	<DisplayStickersContainer players={[]} />
+</Modal>

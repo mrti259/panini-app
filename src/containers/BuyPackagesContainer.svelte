@@ -14,13 +14,13 @@
 		}
 
 		const moneyNeeded = amount * $state.packagePrice;
-		if (moneyNeeded > $state.fiubaCoins) {
+		if (moneyNeeded > $state.coins) {
 			alert(`No tenes suficiente cash... Necesitas ${moneyNeeded} FIU`);
 			return;
 		}
 
 		$state.packages += amount;
-		$state.fiubaCoins -= moneyNeeded;
+		$state.coins -= moneyNeeded;
 	}
 </script>
 
@@ -35,7 +35,7 @@
 		{/each}
 	</div>
 	<br />
-	<div class="d-flex">
+	<div class="d-flex gap-2">
 		<input
 			type="number"
 			placeholder="Ingresar una cantidad personalizada"
