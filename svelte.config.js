@@ -10,8 +10,8 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		alias: {
-			app: 'app',
-			assets: 'app/assets'
+			app: 'src',
+			assets: 'src/assets'
 		}
 	}
 };

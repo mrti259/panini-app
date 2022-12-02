@@ -1,0 +1,22 @@
+{
+  "name": "dapp",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "network": "ganache-cli --deterministic",
+    "networks": "truffle networks",
+    "compile": "truffle compile",
+    "develop": "truffle develop",
+    "migrate": "truffle migrate"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.8.0",
+    "@truffle/contract": "^4.6.8",
+    "@truffle/hdwallet-provider": "^2.1.2",
+    "dotenv": "^16.0.3",
+    "ganache-cli": "^6.12.2",
+    "truffle": "^5.6.8"
+  }
+}
