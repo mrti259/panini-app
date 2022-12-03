@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PlayerCard from 'app/components/PlayerCard.svelte';
+	import PlayerCard from '$lib/components/PlayerCard.svelte';
 
 	export let players: number[];
 </script>

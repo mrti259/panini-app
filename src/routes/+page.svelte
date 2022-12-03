@@ -1,8 +1,7 @@
 <script lang="ts">
-	import DisplayActiveExchangeContainer from 'app/containers/DisplayActiveExchangeContainer.svelte';
-	import DisplayPackagesContainer from 'app/containers/DisplayPackagesContainer.svelte';
-	import DisplayStickersContainer from 'app/containers/DisplayStickersContainer.svelte';
-	import { state } from 'app/state';
+	import DisplayActiveExchangeContainer from "$lib/containers/DisplayActiveExchangeContainer.svelte";
+	import DisplayStickersContainer from "$lib/containers/DisplayStickersContainer.svelte";
+	import {state} from "$lib/context"
 
 	function min(a: number, b: number) {
 		return a < b ? a : b;
@@ -16,7 +15,7 @@
 </section>
 <section class="container bg-light">
 	<h2>Paquetes disponibles</h2>
-	<DisplayPackagesContainer />
+	<DisplayStickersContainer players={new Array($state.stickers)} />
 </section>
 <section class="container bg-light">
 	<h2>Intercambios activos</h2>

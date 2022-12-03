@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Card from 'app/components/Card.svelte';
-	import Modal from 'app/components/Modal.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import Modal from '$lib/components/Modal.svelte';
+	import logo from '$lib/assets/qatar_logo.jpg';
+	import { state } from '$lib/context';
 	import DisplayStickersContainer from './DisplayStickersContainer.svelte';
-	import logo from 'assets/qatar_logo.jpg';
-	import { state } from 'app/state';
 
 	$: packages = new Array($state.packages);
 

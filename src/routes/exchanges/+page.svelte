@@ -1,7 +1,7 @@
 <script>
-	import CreateExchangeContainer from 'app/containers/CreateExchangeContainer.svelte';
-	import DisplayActiveExchangesContainer from 'app/containers/DisplayActiveExchangeContainer.svelte';
-	import { state } from 'app/state';
+	import CreateExchangeContainer from '$lib/containers/CreateExchangeContainer.svelte';
+	import DisplayActiveExchangesContainer from '$lib/containers/DisplayActiveExchangeContainer.svelte';
+	import { state } from '$lib/context';
 </script>
 
 <h1>Intercambios</h1>

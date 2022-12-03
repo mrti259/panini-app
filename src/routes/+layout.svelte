@@ -1,12 +1,18 @@
-<script>
-	import Modal from 'app/components/Modal.svelte';
-	import BuyPackagesContainer from 'app/containers/BuyPackagesContainer.svelte';
-	import BuyCoinsContainer from 'app/containers/BuyCoinsContainer.svelte';
-	import { state } from 'app/state';
+<script lang="ts">
+	import { page } from '$app/stores';
+	import Modal from '$lib/components/Modal.svelte';
+	import BuyCoinsContainer from '$lib/containers/BuyCoinsContainer.svelte';
+	import BuyPackagesContainer from '$lib/containers/BuyPackagesContainer.svelte';
+	import { setUpWeb3, state } from '$lib/context';
+	import { onMount } from 'svelte';
+
+	onMount(function() {
+		setUpWeb3($page.data.contracts);
+	})
 </script>
 
 <div class="container-fluid">
-	<header class="navbar navbar-expand-lg bg-light row px-3 sticky-top">
+	<header class="navbar navbar-expand-md bg-light row px-3 sticky-top">
 		<nav class="navbar-nav col">
 			<a href="/" class="nav-link">Inicio</a>
 			<a href="/album" class="nav-link">Album</a>

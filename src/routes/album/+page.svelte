@@ -1,6 +1,6 @@
 <script>
-	import DisplayStickersContainer from 'app/containers/DisplayStickersContainer.svelte';
-	import { state } from 'app/state';
+	import DisplayStickersContainer from '$lib/containers/DisplayStickersContainer.svelte';
+	import { state } from '$lib/context';
 </script>
 
 <h1>Album</h1>

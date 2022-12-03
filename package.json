@@ -30,7 +30,10 @@
 		"vite": "^3.1.0"
 	},
 	"dependencies": {
+		"@drizzle/store": "^1.5.3",
+		"@truffle/contract": "^4.6.8",
 		"dotenv": "^16.0.3",
-		"web3": "^1.8.1"
+		"web3": "^1.8.1",
+		"web3-eth-contract": "^1.8.1"
 	}
 }

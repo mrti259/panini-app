@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { state } from 'app/state';
+	import { state } from '$lib/context';
 
 	let customAmount: number;
 	let customAmountInput: HTMLInputElement;

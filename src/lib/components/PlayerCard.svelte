@@ -1,6 +1,6 @@
 <script>
 	import Card from './Card.svelte';
-	import photo from 'assets/default_player.jpg';
+	import photo from '$lib/assets/default_player.jpg';
 
 	const player = {
 		first_name: 'Nombre',
