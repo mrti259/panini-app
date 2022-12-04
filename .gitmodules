@@ -1,0 +1,3 @@
+[submodule "libqatan"]
+	path = libqatan
+	url = https://github.com/saantim/panini.git
