@@ -1,7 +1,6 @@
 <script>
-	import DisplayStickersContainer from '$lib/containers/DisplayStickersContainer.svelte';
-	import { state } from '$lib/context';
+	import DisplayStickersContainer from '$lib/components/stickers/DisplayStickersContainer.svelte';
 </script>
 
 <h1>Album</h1>
-<DisplayStickersContainer players={new Array($state.stickers)} />
+<DisplayStickersContainer max={100} />

@@ -11,12 +11,16 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"build-artifacts": "cd libqatan && npm run compile && cp -r build/ ../src/lib/server/",
-		"network": "cd libqatan && npm run network"
+		"migrate": "cd libqatan && npm run migrate && cp -r build/ ../src/lib/contracts/ && cd .. && npm run typechain",
+		"network": "cd libqatan && npm run network",
+		"networks": "cd libqatan && npm run networks",
+		"typechain": "typechain --target=truffle-v5 --out-dir src/lib/types src/lib/contracts/build/contracts/*.json"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
+		"@typechain/truffle-v5": "^8.0.2",
+		"@types/web3": "^1.2.2",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
 		"@typescript-eslint/parser": "^5.27.0",
 		"eslint": "^8.16.0",
@@ -28,14 +32,13 @@
 		"svelte-check": "^2.7.1",
 		"svelte-preprocess": "^4.10.6",
 		"tslib": "^2.3.1",
+		"typechain": "^8.1.1",
 		"typescript": "^4.7.4",
 		"vite": "^3.1.0"
 	},
 	"dependencies": {
-		"@drizzle/store": "^1.5.3",
 		"@truffle/contract": "^4.6.8",
 		"dotenv": "^16.0.3",
-		"web3": "^1.8.1",
-		"web3-eth-contract": "^1.8.1"
+		"web3": "^1.8.1"
 	}
 }

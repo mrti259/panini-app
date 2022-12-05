@@ -1,14 +1,18 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import Modal from '$lib/components/Modal.svelte';
-	import BuyCoinsContainer from '$lib/containers/BuyCoinsContainer.svelte';
-	import BuyPackagesContainer from '$lib/containers/BuyPackagesContainer.svelte';
-	import { setUpWeb3, state } from '$lib/context';
+	import { Web3Service } from '$lib/Web3Service';
+	import Modal from '$lib/components/shared/Modal.svelte';
+	import BuyCoinsContainer from '$lib/components/coins/BuyCoinsContainer.svelte';
+	import BuyPackagesContainer from '$lib/components/packages/BuyPackagesContainer.svelte';
+	import { state } from '$lib/context';
 	import { onMount } from 'svelte';
 
-	onMount(function() {
-		setUpWeb3($page.data.contracts);
-	})
+	onMount(async () => {
+		const web3Service = Web3Service.createInstance($page.data.contracts);
+		$state.coins = await web3Service.getBalance();
+		$state.packages = await web3Service.getPackages();
+		$state.stickers = await web3Service.getStickers();
+	});
 </script>
 
 <div class="container-fluid">
