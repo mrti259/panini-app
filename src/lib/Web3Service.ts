@@ -1,19 +1,16 @@
 import { PUBLIC_PROVIDER_URL } from '$env/static/public';
 import Web3 from 'web3';
 import type { AppContracts, ContractParams } from './contracts/contracts.server';
-import type {
-	FiubaCoinInstance,
-	QatanStickerExchangeInstance,
-	QatanStickerInstance,
-	QatanStickerPackageInstance
-} from './types';
+import type { FiubaCoin, QatanSticker, QatanStickerExchange, QatanStickerPackage } from './types';
 
 export class Web3Service {
-	web3 = new Web3(PUBLIC_PROVIDER_URL);
-	FiubaCoins: FiubaCoinInstance;
-	QatanStickers: QatanStickerInstance;
-	QatanStickerPackage: QatanStickerPackageInstance;
-	QatanStickerExchange: QatanStickerExchangeInstance;
+	accounts: string[] = [];
+	activeAccount = '';
+	private web3 = new Web3(PUBLIC_PROVIDER_URL);
+	private FiubaCoins: FiubaCoin;
+	private QatanStickers: QatanSticker;
+	private QatanStickerPackage: QatanStickerPackage;
+	private QatanStickerExchange: QatanStickerExchange;
 
 	private static instance: Web3Service;
 
@@ -21,115 +18,109 @@ export class Web3Service {
 		return this.instance;
 	}
 
-	static createInstance(contracts: AppContracts) {
+	static async createInstance(contracts: AppContracts) {
 		this.instance = new Web3Service(contracts);
+		await this.instance.load();
 		return this.getInstance();
 	}
 
-	constructor(contracts: AppContracts) {
+	constructor(private contracts: AppContracts) {
 		this.FiubaCoins = this.initContract(contracts.FiubaCoin);
-		this.QatanStickers = this.initContract(contracts.QatanSticker);
-		this.QatanStickerPackage = this.initContract(contracts.QatanStickerPackage);
 		this.QatanStickerExchange = this.initContract(contracts.QatanStickerExchange);
+		this.QatanStickers = this.QatanStickerExchange;
+		this.QatanStickerPackage = this.initContract(contracts.QatanStickerPackage);
 	}
 
 	private initContract<ContractInstance>(contract: ContractParams) {
 		return new this.web3.eth.Contract(contract.abi, contract.address) as ContractInstance;
 	}
 
-	private logError(error: string) {
-		console.log(error);
-	}
-
 	private convertToNumber(result: unknown) {
 		return Number(result);
 	}
 
-	async getAccount() {
-		return (await this.web3.eth.getAccounts()).at(0);
+	async load() {
+		this.accounts = await this.web3.eth.getAccounts();
+		this.activeAccount = this.accounts[0];
+	}
+
+	async setUpContracts() {
+		await this.QatanStickerPackage.methods.setPrice(1).send({ from: this.activeAccount });
+		await this.QatanStickerPackage.methods
+			.setCoinAddress(this.contracts.FiubaCoin.address)
+			.send({ from: this.activeAccount });
+		await this.QatanStickerPackage.methods
+			.setStickerAddress(this.contracts.QatanStickerExchange.address)
+			.send({ from: this.activeAccount });
+		await this.QatanStickers.methods
+			.setPackageAddress(this.contracts.QatanStickerPackage.address)
+			.send({ from: this.activeAccount });
 	}
 
 	async getBalance(): Promise<number> {
-		const account = await this.getAccount();
-		if (!account) return 0;
 		return await this.FiubaCoins.methods
-			.balanceOf(account)
+			.balanceOf(this.activeAccount)
 			.call()
-			.then(this.convertToNumber)
-			.catch(this.logError);
+			.then(this.convertToNumber);
 	}
 
 	async getCoinPrice(): Promise<number> {
-		return await this.FiubaCoins.methods.price().call();
+		return await this.FiubaCoins.methods.price().call().then(this.convertToNumber);
 	}
 
 	async buyCoins(amount: number) {
-		const account = await this.getAccount();
-		if (!account) return 0;
 		const price = await this.getCoinPrice();
 		return await this.FiubaCoins.methods
 			.buyCoins(amount)
-			.send({ from: account, value: amount * price });
+			.send({ from: this.activeAccount, value: amount * price });
 	}
 
 	async getPackagePrice(): Promise<number> {
-		return await this.QatanStickerPackage.methods.price().call();
+		return await this.QatanStickerPackage.methods.price().call().then(this.convertToNumber);
 	}
 
 	async getPackages(): Promise<number> {
-		const account = await this.getAccount();
-		if (!account) return 0;
 		return await this.QatanStickerPackage.methods
-			.getAmountOfPackagesFrom(account)
+			.getAmountOfPackagesFrom(this.activeAccount)
 			.call()
-			.then(this.convertToNumber)
-			.catch(this.logError);
+			.then(this.convertToNumber);
 	}
 
-	async buyPackages(quantity: number) {
-		const account = await this.getAccount();
-		if (!account) return 0;
+	async buyPackages(quantity: number, transferAmount: number) {
 		await this.FiubaCoins.methods
-			.approve(this.QatanStickerPackage._address, quantity * (await this.getPackagePrice()))
-			.send({ from: account });
-		return await this.QatanStickerPackage.methods.buyPackages(quantity).send({ from: account });
+			.approve(this.contracts.QatanStickerPackage.address, String(transferAmount))
+			.send({ from: this.activeAccount });
+		return await this.QatanStickerPackage.methods
+			.buyPackages(quantity)
+			.send({ from: this.activeAccount, gas: 9_000_000 });
 	}
 
 	async openPackages() {
-		const account = await this.getAccount();
-		if (!account) return;
-		return await this.QatanStickerPackage.methods.openPackage().send({ from: account });
+		return await this.QatanStickerPackage.methods.openPackage().send({ from: this.activeAccount });
 	}
 
 	async getStickers() {
-		const account = await this.getAccount();
-		if (!account) return 0;
 		return await this.QatanStickers.methods
-			.getStickersFromWallet(account)
+			.getStickersFromWallet(this.activeAccount)
 			.call()
-			.then(this.convertToNumber)
-			.catch(this.logError);
+			.then(this.convertToNumber);
 	}
 
 	async getExchanges() {
-		const account = await this.getAccount();
-		if (!account) return 0;
-		return await this.QatanStickerExchange.methods.getAllExchanges().send({ from: account });
+		return await this.QatanStickerExchange.methods
+			.getAllExchanges()
+			.send({ from: this.activeAccount });
 	}
 
 	async createExchange(tokenId: number, playerId: number) {
-		const account = await this.getAccount();
-		if (!account) return 0;
 		return await this.QatanStickerExchange.methods
 			.createExchange(tokenId, playerId)
-			.send({ from: account });
+			.send({ from: this.activeAccount });
 	}
 
 	async acceptExchange(exchangeId: number) {
-		const account = await this.getAccount();
-		if (!account) return 0;
 		return await this.QatanStickerExchange.methods
 			.acceptExchange(exchangeId)
-			.send({ from: account });
+			.send({ from: this.activeAccount });
 	}
 }

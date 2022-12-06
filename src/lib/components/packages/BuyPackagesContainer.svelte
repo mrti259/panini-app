@@ -19,11 +19,11 @@
 
 		const moneyNeeded = quantity * $state.packagePrice;
 		if (moneyNeeded > $state.coins) {
-			alert(`No tenes suficiente cash... Necesitas ${moneyNeeded} FIU`);
+			alert(`No tenes suficiente cash... Necesitas ${moneyNeeded / (10 ** 18)} FIU`);
 			return;
 		}
 
-		await web3Service.buyPackages(quantity);
+		await web3Service.buyPackages(quantity, moneyNeeded);
 		$state.packages = await web3Service.getPackages();
 		$state.coins = await web3Service.getBalance();
 	}

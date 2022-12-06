@@ -6,7 +6,7 @@ import QatanStickerExchangeJson from './build/contracts/QatanStickerExchange.jso
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function contract(json: { abi: any; networks: Record<string, { address: string }> }) {
 	const network = Object.values(json.networks).pop();
-	const address = network?.address;
+	const address = network?.address || '';
 	return { abi: json.abi, address };
 }
 

@@ -14,12 +14,13 @@
 		"migrate": "cd libqatan && npm run migrate && cp -r build/ ../src/lib/contracts/ && cd .. && npm run typechain",
 		"network": "cd libqatan && npm run network",
 		"networks": "cd libqatan && npm run networks",
-		"typechain": "typechain --target=truffle-v5 --out-dir src/lib/types src/lib/contracts/build/contracts/*.json"
+		"typechain": "typechain --target=web3-v1 --out-dir src/lib/types src/lib/contracts/build/contracts/*.json"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
 		"@typechain/truffle-v5": "^8.0.2",
+		"@typechain/web3-v1": "^6.0.2",
 		"@types/web3": "^1.2.2",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
 		"@typescript-eslint/parser": "^5.27.0",

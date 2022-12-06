@@ -5,5 +5,8 @@ export const state = writable({
 	packages: 0,
 	stickers: 0,
 	exchanges: 0,
-	packagePrice: 1
+	packagePrice: 1,
+	decimals: 1,
+	activeAccount: '',
+	accounts: [] as string[]
 });
