@@ -6,9 +6,9 @@ import type { FiubaCoin, QatanSticker, QatanStickerExchange, QatanStickerPackage
 export class Web3Service {
 	accounts: string[] = [];
 	activeAccount = '';
-	private web3 = new Web3(PUBLIC_PROVIDER_URL);
+	private web3 = new Web3(window.ethereum);
 	private FiubaCoins: FiubaCoin;
-	private QatanStickers: QatanSticker;
+	private QatanStickers: QatanStickerExchange;
 	private QatanStickerPackage: QatanStickerPackage;
 	private QatanStickerExchange: QatanStickerExchange;
 
@@ -19,6 +19,7 @@ export class Web3Service {
 	}
 
 	static async createInstance(contracts: AppContracts) {
+		window.ethereum.enable()
 		this.instance = new Web3Service(contracts);
 		await this.instance.load();
 		return this.getInstance();
@@ -44,19 +45,6 @@ export class Web3Service {
 		this.activeAccount = this.accounts[0];
 	}
 
-	async setUpContracts() {
-		await this.QatanStickerPackage.methods.setPrice(1).send({ from: this.activeAccount });
-		await this.QatanStickerPackage.methods
-			.setCoinAddress(this.contracts.FiubaCoin.address)
-			.send({ from: this.activeAccount });
-		await this.QatanStickerPackage.methods
-			.setStickerAddress(this.contracts.QatanStickerExchange.address)
-			.send({ from: this.activeAccount });
-		await this.QatanStickers.methods
-			.setPackageAddress(this.contracts.QatanStickerPackage.address)
-			.send({ from: this.activeAccount });
-	}
-
 	async getBalance(): Promise<number> {
 		return await this.FiubaCoins.methods
 			.balanceOf(this.activeAccount)
@@ -65,18 +53,26 @@ export class Web3Service {
 	}
 
 	async getCoinPrice(): Promise<number> {
-		return await this.FiubaCoins.methods.price().call().then(this.convertToNumber);
+		return await this.FiubaCoins.methods.mintPrice().call().then(this.convertToNumber);
+	}
+
+	async getPlayerId(stickerId: number): Promise<number> {
+		return await this.QatanStickerExchange.methods
+			.getPlayerIdFromStickerId(stickerId)
+			.call()
+			.then(this.convertToNumber);
 	}
 
 	async buyCoins(amount: number) {
 		const price = await this.getCoinPrice();
 		return await this.FiubaCoins.methods
-			.buyCoins(amount)
+			.getFiubaCoin(amount)
 			.send({ from: this.activeAccount, value: amount * price });
 	}
 
 	async getPackagePrice(): Promise<number> {
-		return await this.QatanStickerPackage.methods.price().call().then(this.convertToNumber);
+		//return await this.QatanStickerPackage.methods.price().call().then(this.convertToNumber);
+		return await Promise.resolve(1 * 10 ** 18)
 	}
 
 	async getPackages(): Promise<number> {
@@ -92,7 +88,7 @@ export class Web3Service {
 			.send({ from: this.activeAccount });
 		return await this.QatanStickerPackage.methods
 			.buyPackages(quantity)
-			.send({ from: this.activeAccount, gas: 9_000_000 });
+			.send({ from: this.activeAccount, gas: 900_000 });
 	}
 
 	async openPackages() {
@@ -103,7 +99,6 @@ export class Web3Service {
 		return await this.QatanStickers.methods
 			.getStickersFromWallet(this.activeAccount)
 			.call()
-			.then(this.convertToNumber);
 	}
 
 	async getExchanges() {
@@ -114,7 +109,7 @@ export class Web3Service {
 
 	async createExchange(tokenId: number, playerId: number) {
 		return await this.QatanStickerExchange.methods
-			.createExchange(tokenId, playerId)
+			.iWantToExchange(tokenId, playerId)
 			.send({ from: this.activeAccount });
 	}
 
