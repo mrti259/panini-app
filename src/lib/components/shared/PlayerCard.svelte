@@ -1,6 +1,8 @@
-<script>
+<script lang="ts">
 	import Card from './Card.svelte';
 	import photo from '$lib/assets/default_player.jpg';
+
+	export let id: number;
 
 	const player = {
 		first_name: 'Nombre',
@@ -18,6 +20,6 @@
 
 <Card {imgAttr}>
 	<strong class="d-block text-truncate" title={name}>
-		{name}
+		{name} {id}
 	</strong>
 </Card>

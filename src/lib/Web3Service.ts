@@ -1,16 +1,16 @@
-import { PUBLIC_PROVIDER_URL } from '$env/static/public';
 import Web3 from 'web3';
 import type { AppContracts, ContractParams } from './contracts/contracts.server';
-import type { FiubaCoin, QatanSticker, QatanStickerExchange, QatanStickerPackage } from './types';
+import type { FiubaCoin, QatanStickerExchange } from './types';
+
+// eslint-disable-next-line no-var, @typescript-eslint/no-explicit-any
+var ethereum: any;
 
 export class Web3Service {
 	accounts: string[] = [];
 	activeAccount = '';
-	private web3 = new Web3(PUBLIC_PROVIDER_URL);
+	private web3 = new Web3(ethereum);
 	private FiubaCoins: FiubaCoin;
-	private QatanStickers: QatanSticker;
-	private QatanStickerPackage: QatanStickerPackage;
-	private QatanStickerExchange: QatanStickerExchange;
+	private QatanStickers: QatanStickerExchange;
 
 	private static instance: Web3Service;
 
@@ -19,6 +19,7 @@ export class Web3Service {
 	}
 
 	static async createInstance(contracts: AppContracts) {
+		ethereum.enable();
 		this.instance = new Web3Service(contracts);
 		await this.instance.load();
 		return this.getInstance();
@@ -26,9 +27,7 @@ export class Web3Service {
 
 	constructor(private contracts: AppContracts) {
 		this.FiubaCoins = this.initContract(contracts.FiubaCoin);
-		this.QatanStickerExchange = this.initContract(contracts.QatanStickerExchange);
-		this.QatanStickers = this.QatanStickerExchange;
-		this.QatanStickerPackage = this.initContract(contracts.QatanStickerPackage);
+		this.QatanStickers = this.initContract(contracts.QatanStickerExchange);
 	}
 
 	private initContract<ContractInstance>(contract: ContractParams) {
@@ -45,15 +44,9 @@ export class Web3Service {
 	}
 
 	async setUpContracts() {
-		await this.QatanStickerPackage.methods.setPrice(1).send({ from: this.activeAccount });
-		await this.QatanStickerPackage.methods
-			.setCoinAddress(this.contracts.FiubaCoin.address)
-			.send({ from: this.activeAccount });
-		await this.QatanStickerPackage.methods
-			.setStickerAddress(this.contracts.QatanStickerExchange.address)
-			.send({ from: this.activeAccount });
+		await this.QatanStickers.methods.setPrice(1).send({ from: this.activeAccount });
 		await this.QatanStickers.methods
-			.setPackageAddress(this.contracts.QatanStickerPackage.address)
+			.setCoinAddress(this.contracts.FiubaCoin.address)
 			.send({ from: this.activeAccount });
 	}
 
@@ -76,11 +69,11 @@ export class Web3Service {
 	}
 
 	async getPackagePrice(): Promise<number> {
-		return await this.QatanStickerPackage.methods.price().call().then(this.convertToNumber);
+		return await this.QatanStickers.methods.price().call().then(this.convertToNumber);
 	}
 
 	async getPackages(): Promise<number> {
-		return await this.QatanStickerPackage.methods
+		return await this.QatanStickers.methods
 			.getAmountOfPackagesFrom(this.activeAccount)
 			.call()
 			.then(this.convertToNumber);
@@ -88,38 +81,36 @@ export class Web3Service {
 
 	async buyPackages(quantity: number, transferAmount: number) {
 		await this.FiubaCoins.methods
-			.approve(this.contracts.QatanStickerPackage.address, String(transferAmount))
+			.approve(this.contracts.QatanStickerExchange.address, String(transferAmount))
 			.send({ from: this.activeAccount });
-		return await this.QatanStickerPackage.methods
+		return await this.QatanStickers.methods
 			.buyPackages(quantity)
-			.send({ from: this.activeAccount, gas: 9_000_000 });
+			.send({ from: this.activeAccount });
 	}
 
 	async openPackages() {
-		return await this.QatanStickerPackage.methods.openPackage().send({ from: this.activeAccount });
+		return await this.QatanStickers.methods.openPackage().send({ from: this.activeAccount });
 	}
 
 	async getStickers() {
 		return await this.QatanStickers.methods
 			.getStickersFromWallet(this.activeAccount)
 			.call()
-			.then(this.convertToNumber);
+			.then((stickers) => stickers.map(this.convertToNumber));
 	}
 
 	async getExchanges() {
-		return await this.QatanStickerExchange.methods
-			.getAllExchanges()
-			.send({ from: this.activeAccount });
+		return await this.QatanStickers.methods.getAllExchanges().send({ from: this.activeAccount });
 	}
 
 	async createExchange(tokenId: number, playerId: number) {
-		return await this.QatanStickerExchange.methods
+		return await this.QatanStickers.methods
 			.createExchange(tokenId, playerId)
 			.send({ from: this.activeAccount });
 	}
 
 	async acceptExchange(exchangeId: number) {
-		return await this.QatanStickerExchange.methods
+		return await this.QatanStickers.methods
 			.acceptExchange(exchangeId)
 			.send({ from: this.activeAccount });
 	}

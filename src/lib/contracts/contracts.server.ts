@@ -1,6 +1,4 @@
 import FiubaCoinJson from './build/contracts/FiubaCoin.json';
-import QatanStickerJson from './build/contracts/QatanSticker.json';
-import QatanStickerPackageJson from './build/contracts/QatanStickerPackage.json';
 import QatanStickerExchangeJson from './build/contracts/QatanStickerExchange.json';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,11 +9,9 @@ function contract(json: { abi: any; networks: Record<string, { address: string }
 }
 
 const FiubaCoin = contract(FiubaCoinJson);
-const QatanSticker = contract(QatanStickerJson);
 const QatanStickerExchange = contract(QatanStickerExchangeJson);
-const QatanStickerPackage = contract(QatanStickerPackageJson);
 
-const contracts = { FiubaCoin, QatanSticker, QatanStickerExchange, QatanStickerPackage };
+const contracts = { FiubaCoin, QatanStickerExchange };
 
 export default contracts;
 export type AppContracts = typeof contracts;
