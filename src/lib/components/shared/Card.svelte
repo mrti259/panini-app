@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let imgAttr: {
 		src: string;
-		alt: string;
+//		alt: string;
 	} | null = null;
 </script>
 

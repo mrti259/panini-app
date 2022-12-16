@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { state } from 'app/state';
+	import { state } from '$lib/context';
+	import { Web3Service } from '$lib/Web3Service';
 
 	let customAmount: number;
 	let customAmountInput: HTMLInputElement;
 
-	function buy(amount?: number) {
+	async function buy(amount?: number) {
 		if (!amount) {
 			customAmountInput.focus();
 			return;
@@ -12,7 +13,10 @@
 		if (!confirm(`¿Querés comprar ${amount} FIU?`)) {
 			return;
 		}
-		$state.coins += amount;
+
+		const web3Service = Web3Service.getInstance();
+		await web3Service.buyCoins(amount);
+		$state.coins = await web3Service.getBalance();
 	}
 </script>
 

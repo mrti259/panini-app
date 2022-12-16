@@ -1,26 +1,31 @@
 <script lang="ts">
-	import { state } from 'app/state';
+	import { Web3Service } from '$lib/Web3Service';
+	import { state } from '$lib/context';
 
 	let customAmount: number;
 	let customAmountInput: HTMLInputElement;
 
-	function buy(amount: number) {
-		if (!amount || amount < 0) {
+	async function buy(quantity: number) {
+		if (!quantity || quantity < 0) {
 			customAmountInput.focus();
 			return;
 		}
-		if (!confirm(`¿Querés comprar ${amount} paquetes?`)) {
+		if (!confirm(`¿Querés comprar ${quantity} paquetes?`)) {
 			return;
 		}
 
-		const moneyNeeded = amount * $state.packagePrice;
+		const web3Service = Web3Service.getInstance();
+		$state.packagePrice = await web3Service.getPackagePrice();
+
+		const moneyNeeded = quantity * $state.packagePrice;
 		if (moneyNeeded > $state.coins) {
-			alert(`No tenes suficiente cash... Necesitas ${moneyNeeded} FIU`);
+			alert(`No tenes suficiente cash... Necesitas ${moneyNeeded / (10 ** 18)} FIU`);
 			return;
 		}
 
-		$state.packages += amount;
-		$state.coins -= moneyNeeded;
+		await web3Service.buyPackages(quantity, moneyNeeded);
+		$state.packages = await web3Service.getPackages();
+		$state.coins = await web3Service.getBalance();
 	}
 </script>
 
