@@ -1,5 +1,4 @@
 import FiubaCoinJson from './build/contracts/FiubaCoin.json';
-import QatanStickerJson from './build/contracts/QatanSticker.json';
 import QatanStickerPackageJson from './build/contracts/QatanStickerPackage.json';
 import QatanStickerExchangeJson from './build/contracts/QatanStickerExchange.json';
 
@@ -9,7 +8,6 @@ function contract(json: { abi: any; }, address : string) {
 }
 
 const FiubaCoin = contract({abi: FiubaCoinJson}, '0x148D6b978AAea16197dE117fDB53f0B58bBEBB23');
-//const QatanSticker = contract(QatanStickerJson);
 const QatanStickerExchange = contract({abi: QatanStickerExchangeJson}, '0x615697eFf8eA399Eab84262b8c442730EDBE4902');
 const QatanStickerPackage = contract({abi: QatanStickerPackageJson}, '0x2AF0434f0Ce85f2587eb542F894019F5AD9b759C');
 
