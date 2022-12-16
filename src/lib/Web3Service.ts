@@ -1,4 +1,3 @@
-import { PUBLIC_PROVIDER_URL } from '$env/static/public';
 import Web3 from 'web3';
 import type { AppContracts, ContractParams } from './contracts/contracts.server';
 import type { FiubaCoin, QatanSticker, QatanStickerExchange, QatanStickerPackage } from './types';

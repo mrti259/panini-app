@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Card from './Card.svelte';
 	import photo from '$lib/assets/default_player.jpg';
 	import { Web3Service } from '$lib/Web3Service';
