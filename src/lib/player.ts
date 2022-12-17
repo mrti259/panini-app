@@ -8,8 +8,6 @@ interface Player {
 	photo: string;
 }
 
-const url =
-	'https://script.google.com/macros/s/AKfycbxMwXM-AptEHaarJ95tnh0hcY11kZN1zrmCnHjdnwEIyFl0ED4GDjKE9JlrhusIuk8E/exec';
 const cache = new Map<number, any>();
 
 export function initPlayer(): Player {
@@ -26,7 +24,8 @@ export async function loadPlayer(stickerId: number): Promise<Player> {
 	const playerId = await web3Service.getPlayerId(stickerId);
 	let data = cache.get(playerId);
 	if (!data) {
-		const response = await fetch(`${url}?stickerId=${playerId}`);
+		const url = await web3Service.getURIFromStickerId(stickerId);
+		const response = await fetch(url);
 		data = await response.json();
 		cache.set(playerId, data);
 	}

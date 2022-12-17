@@ -79,6 +79,12 @@ export class Web3Service {
 			.then(this.convertToNumber);
 	}
 
+	async getURIFromStickerId(stickerId: number): Promise<string> {
+		return await this.QatanStickerExchange.methods
+			.getURIFromStickerId(stickerId)
+			.call();
+	}
+
 	async buyPackages(quantity: number, transferAmount: number) {
 		await this.FiubaCoins.methods
 			.approve(this.contracts.QatanStickerPackage.address, String(transferAmount))
