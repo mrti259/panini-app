@@ -117,4 +117,8 @@ export class Web3Service {
 			.acceptExchange(exchangeId)
 			.send({ from: this.activeAccount });
 	}
+
+	async getExchangeData(exchangeId: number) {
+		return await this.QatanStickerExchange.methods.exchanges(exchangeId).call();
+	}
 }

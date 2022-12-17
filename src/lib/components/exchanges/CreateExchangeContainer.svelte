@@ -1,19 +1,34 @@
 <script lang="ts">
 	import { state } from '$lib/context';
+	import { initPlayer, loadPlayer, loadPlayerFromSticker } from '$lib/player';
 	import { Web3Service } from '$lib/Web3Service';
 	import PlayerCard from '../shared/PlayerCard.svelte';
 
-	let tokenId = 0,
-		playerId = 0;
+	export let stickers: number[];
+	export let players: { id: number; name: string }[];
 
-	$: isValid = Boolean(tokenId && playerId);
+	let tokenId = 0;
+	let playerId = 0;
+	let playerFromToken = initPlayer();
+	let playerFromPlayerId = initPlayer();
+
+	$: isValid = Boolean(playerFromToken.jersey_num && playerFromPlayerId.jersey_num);
+	$: updatePlayerFromToken(tokenId);
+	$: updatePlayerFromPlayerId(playerId);
+
+	async function updatePlayerFromToken(tokenId: number) {
+		playerFromToken = tokenId ? await loadPlayerFromSticker(tokenId) : initPlayer();
+	}
+
+	async function updatePlayerFromPlayerId(playerId: number) {
+		playerFromPlayerId = playerId ? await loadPlayer(playerId) : initPlayer();
+	}
 
 	async function createExchange() {
-		console.log(tokenId, playerId);
 		if (!isValid) {
 			return;
 		}
-		if (!confirm(`¿Quiere intercambiar x por y?`)) {
+		if (!confirm(`¿Quiere intercambiar ${playerFromToken.name} por ${playerFromPlayerId.name}?`)) {
 			return;
 		}
 
@@ -37,17 +52,27 @@
 	<div class="col-sm-5 col-lg-12">
 		<strong>Ofrecer</strong>
 		<select bind:value={tokenId}>
-			<option value={0}>-</option>
-			<option value={1}>A</option>
+			{#each stickers as stickerId}
+				<option value={stickerId}>
+					{#await loadPlayerFromSticker(stickerId)}
+						{stickerId}
+					{:then player}
+						{player.name}
+					{/await}
+				</option>
+			{/each}
 		</select>
-		<PlayerCard />
+		<PlayerCard player={playerFromToken} {tokenId} />
 	</div>
 	<div class="col-sm-5 col-lg-12">
 		<strong>Por</strong>
 		<select bind:value={playerId}>
-			<option value={0}>-</option>
-			<option value={1}>A</option>
+			{#each players as player}
+				<option value={player.id}>
+					{player.name}
+				</option>
+			{/each}
 		</select>
-		<PlayerCard />
+		<PlayerCard player={playerFromPlayerId} />
 	</div>
 </div>

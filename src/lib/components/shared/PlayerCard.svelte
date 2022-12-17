@@ -1,26 +1,28 @@
 <script lang="ts">
 	import Card from './Card.svelte';
-	import { onMount } from 'svelte';
-	import { initPlayer, loadPlayer } from '$lib/player';
+	import { initPlayer } from '$lib/player';
 
-	export let stickerId: number;
+	export let tokenId: number = 0;
+	export let player = initPlayer();
 
-	let player = initPlayer();
-
-	onMount(async () => {
-		player = await loadPlayer(stickerId);
-	});
-
-	$: imgAttr = {
+	const imgAttr = {
 		src: player.photo,
 		alt: player.name
 	};
 </script>
 
 <Card {imgAttr}>
-	<strong class="d-block text-truncate" title={player.name}>
-		{player.name}<br>
-		{player.nationality}<br>
-		{player.jersey_num}
-	</strong>
+	<div>
+		<strong class="d-block text-truncate" title={player.name}>
+			{player.name}
+		</strong>
+	</div>
+	<div>
+		{player.nationality} - {player.jersey_num}
+	</div>
+	{#if tokenId}
+		<div class="text-end">
+			<small>Token: {tokenId}</small>
+		</div>
+	{/if}
 </Card>

@@ -1,7 +1,7 @@
 import { Web3Service } from './Web3Service';
 import photo from './assets/default_player.jpg';
 
-interface Player {
+export interface Player {
 	name: string;
 	nationality: string;
 	jersey_num: number;
@@ -21,9 +21,13 @@ export function initPlayer(): Player {
 	};
 }
 
-export async function loadPlayer(stickerId: number): Promise<Player> {
+export async function loadPlayerFromSticker(stickerId: number) {
 	const web3Service = Web3Service.getInstance();
 	const playerId = await web3Service.getPlayerId(stickerId);
+	return await loadPlayer(playerId);
+}
+
+export async function loadPlayer(playerId: number) {
 	let data = cache.get(playerId);
 	if (!data) {
 		const response = await fetch(`${url}?stickerId=${playerId}`);
