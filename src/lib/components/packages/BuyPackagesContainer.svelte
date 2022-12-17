@@ -19,7 +19,7 @@
 
 		const moneyNeeded = quantity * $state.packagePrice;
 		if (moneyNeeded > $state.coins) {
-			alert(`No tenes suficiente cash... Necesitas ${moneyNeeded / (10 ** 18)} FIU`);
+			alert(`No tenes suficiente cash... Necesitas ${moneyNeeded / 10 ** 18} FIU`);
 			return;
 		}
 

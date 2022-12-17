@@ -1,19 +1,38 @@
 <script lang="ts">
 	import { state } from '$lib/context';
+	import { loadPlayer, loadPlayerFromSticker, type Player } from '$lib/player';
 	import { Web3Service } from '$lib/Web3Service';
 	import PlayerCard from '../shared/PlayerCard.svelte';
 
-	let tokenId = 0,
-		playerId = 0;
+	export let stickers: number[];
+	export let players: { id: number; name: string }[];
 
-	$: isValid = Boolean(tokenId && playerId);
+	let tokenId = 0;
+	let playerId = 0;
+	let playerFromToken: Player | null;
+	let playerFromPlayerId: Player | null;
+
+	$: isValid = Boolean(playerFromToken && playerFromPlayerId);
+	$: updatePlayerFromToken(tokenId);
+	$: updatePlayerFromPlayerId(playerId);
+
+	async function updatePlayerFromToken(tokenId: number) {
+		playerFromToken = null;
+		if (tokenId) playerFromToken = await loadPlayerFromSticker(tokenId);
+	}
+
+	async function updatePlayerFromPlayerId(playerId: number) {
+		playerFromPlayerId = null;
+		if (playerId) playerFromPlayerId = await loadPlayer(playerId);
+	}
 
 	async function createExchange() {
-		console.log(tokenId, playerId);
 		if (!isValid) {
 			return;
 		}
-		if (!confirm(`¿Quiere intercambiar x por y?`)) {
+		if (
+			!confirm(`¿Quiere intercambiar ${playerFromToken!.name} por ${playerFromPlayerId!.name}?`)
+		) {
 			return;
 		}
 
@@ -36,18 +55,32 @@
 	</div>
 	<div class="col-sm-5 col-lg-12">
 		<strong>Ofrecer</strong>
-		<select bind:value={tokenId}>
-			<option value={0}>-</option>
-			<option value={1}>A</option>
+		<select bind:value={tokenId} class="form-control">
+			{#each stickers as stickerId}
+				<option value={stickerId}>
+					{#await loadPlayerFromSticker(stickerId)}
+						{stickerId}
+					{:then player}
+						{player.name}
+					{/await}
+				</option>
+			{/each}
 		</select>
-		<PlayerCard />
+		{#if playerFromToken}
+			<PlayerCard player={playerFromToken} {tokenId} />
+		{/if}
 	</div>
 	<div class="col-sm-5 col-lg-12">
 		<strong>Por</strong>
-		<select bind:value={playerId}>
-			<option value={0}>-</option>
-			<option value={1}>A</option>
+		<select bind:value={playerId} class="form-control">
+			{#each players as player}
+				<option value={player.id}>
+					{player.name}
+				</option>
+			{/each}
 		</select>
-		<PlayerCard />
+		{#if playerFromPlayerId}
+			<PlayerCard player={playerFromPlayerId} />
+		{/if}
 	</div>
 </div>
