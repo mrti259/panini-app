@@ -17,7 +17,7 @@ export class Web3Service {
 	}
 
 	static async createInstance(contracts: AppContracts) {
-		window.ethereum.enable();
+		await window.ethereum.enable();
 		this.instance = new Web3Service(contracts);
 		await this.instance.load();
 		return this.getInstance();

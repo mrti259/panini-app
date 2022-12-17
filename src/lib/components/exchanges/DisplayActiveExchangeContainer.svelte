@@ -14,6 +14,7 @@
 
 		const web3Service = Web3Service.getInstance();
 		await web3Service.acceptExchange(exchange.id);
+		$state.exchanges = await web3Service.getExchanges();
 	}
 </script>
 
@@ -27,19 +28,23 @@
 		{#await loadExchange(exchangeId)}
 			<div class="col-md-4">Cargando intercambio</div>
 		{:then exchange}
-			<div class="col-md-4">
+			<div class="col-md-4 h-100">
 				<Card>
-					<div class="d-flex justify-content-around">
-						<div>
+					<div class="row text-center">
+						<div class="col-6">
 							<strong>Ofrece</strong>
 						</div>
-						<div>
+						<div class="col-6">
 							<strong>Por</strong>
 						</div>
 					</div>
-					<div class="d-flex justify-content-around">
-						<PlayerCard player={exchange.token} tokenId={exchange.tokenId} />
-						<PlayerCard player={exchange.player} />
+					<div class="row">
+						<div class="col-6 d-flex align-content-stretch">
+							<PlayerCard player={exchange.token} tokenId={exchange.tokenId} />
+						</div>
+						<div class="col-6 d-flex align-content-stretch">
+							<PlayerCard player={exchange.player} />
+						</div>
 					</div>
 					<button
 						type="button"

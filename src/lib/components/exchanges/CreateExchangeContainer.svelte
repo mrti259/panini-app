@@ -51,7 +51,7 @@
 	</div>
 	<div class="col-sm-5 col-lg-12">
 		<strong>Ofrecer</strong>
-		<select bind:value={tokenId}>
+		<select bind:value={tokenId} class="form-control">
 			{#each stickers as stickerId}
 				<option value={stickerId}>
 					{#await loadPlayerFromSticker(stickerId)}
@@ -66,7 +66,7 @@
 	</div>
 	<div class="col-sm-5 col-lg-12">
 		<strong>Por</strong>
-		<select bind:value={playerId}>
+		<select bind:value={playerId} class="form-control">
 			{#each players as player}
 				<option value={player.id}>
 					{player.name}

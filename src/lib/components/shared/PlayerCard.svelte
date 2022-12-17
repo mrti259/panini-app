@@ -5,7 +5,7 @@
 	export let tokenId: number = 0;
 	export let player = initPlayer();
 
-	const imgAttr = {
+	$: imgAttr = {
 		src: player.photo,
 		alt: player.name
 	};
