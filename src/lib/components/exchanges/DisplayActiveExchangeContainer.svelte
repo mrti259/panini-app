@@ -8,7 +8,7 @@
 
 	const getMin = (a: number, b: number) => (a < b ? a : b);
 
-	$: exchangeCollection = Array(getMin(max, $state.exchanges));
+	$: exchangeCollection = $state.exchanges.slice(0, getMin(max, $state.exchanges.length));
 
 	async function acceptExchange(exchangeId: number) {
 		if (!confirm(`¿Quiere intercambiar x por y?`)) {
