@@ -9,7 +9,6 @@
 
 	onMount(async () => {
 		const web3Service = await Web3Service.createInstance($page.data.contracts);
-		$state.decimals = web3Service.decimals;
 		loadAccountData(web3Service);
 	});
 
@@ -18,7 +17,6 @@
 		const web3Service = Web3Service.getInstance();
 		web3Service.activeAccount = account;
 		loadAccountData(web3Service);
-		$state.activeAccount = account;
 	}
 
 	async function loadAccountData(web3Service: Web3Service) {
@@ -27,6 +25,13 @@
 		$state.coins = await web3Service.getBalance();
 		$state.packages = await web3Service.getPackages();
 		$state.stickers = await web3Service.getStickers();
+		$state.exchanges = await web3Service.getExchanges();
+	}
+
+
+	async function updateAccounts() {
+		const web3Service = Web3Service.getInstance();
+		await web3Service.load()
 	}
 </script>
 
@@ -59,6 +64,11 @@
 						</button>
 					</li>
 				{/each}
+				<li>
+					<button type="button" class="dropdown-item" on:click={() => updateAccounts()}>
+						Actualizar cuentas
+					</button>
+				</li>
 			</ul>
 		</article>
 	</header>

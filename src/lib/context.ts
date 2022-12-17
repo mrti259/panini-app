@@ -4,9 +4,8 @@ export const state = writable({
 	coins: 0,
 	packages: 0,
 	stickers: [] as number[],
-	exchanges: 0,
+	exchanges: [] as number[],
 	packagePrice: 1,
-	decimals: 1,
 	activeAccount: '',
 	accounts: [] as string[]
 });
