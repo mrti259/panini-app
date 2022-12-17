@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { initPlayer, loadPlayerFromSticker } from '$lib/player';
+	import { loadPlayerFromSticker } from '$lib/player';
 	import PlayerCard from '../shared/PlayerCard.svelte';
 
 	export let stickers: number[] = [];
@@ -14,7 +14,10 @@
 	{#each stickers as stickerId}
 		<div class="col-md-2 my-3">
 			{#await loadPlayerFromSticker(stickerId)}
-				<PlayerCard player={initPlayer()} tokenId={stickerId} />
+				<div class="spinner-border" role="status">
+					<span class="visually-hidden">Loading.../span> </span>
+				</div>
+				Cargando figurita
 			{:then player}
 				<PlayerCard {player} tokenId={stickerId} />
 			{/await}

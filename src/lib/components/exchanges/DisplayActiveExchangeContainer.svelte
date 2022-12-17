@@ -25,10 +25,13 @@
 		</div>
 	{/if}
 	{#each exchanges as exchangeId}
-		{#await loadExchange(exchangeId)}
-			<div class="col-md-4">Cargando intercambio</div>
-		{:then exchange}
-			<div class="col-md-4 h-100">
+		<div class="col-md-4">
+			{#await loadExchange(exchangeId)}
+				<div class="spinner-border" role="status">
+					<span class="visually-hidden">Loading.../span> </span>
+				</div>
+				Cargando intercambio
+			{:then exchange}
 				<Card>
 					<div class="row text-center">
 						<div class="col-6">
@@ -52,7 +55,7 @@
 						on:click={() => acceptExchange(exchange)}>Intercambiar</button
 					>
 				</Card>
-			</div>
-		{/await}
+			{/await}
+		</div>
 	{/each}
 </div>

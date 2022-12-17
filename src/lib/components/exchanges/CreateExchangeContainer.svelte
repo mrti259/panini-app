@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { state } from '$lib/context';
-	import { initPlayer, loadPlayer, loadPlayerFromSticker } from '$lib/player';
+	import { loadPlayer, loadPlayerFromSticker, type Player } from '$lib/player';
 	import { Web3Service } from '$lib/Web3Service';
 	import PlayerCard from '../shared/PlayerCard.svelte';
 
@@ -9,26 +9,30 @@
 
 	let tokenId = 0;
 	let playerId = 0;
-	let playerFromToken = initPlayer();
-	let playerFromPlayerId = initPlayer();
+	let playerFromToken: Player | null;
+	let playerFromPlayerId: Player | null;
 
-	$: isValid = Boolean(playerFromToken.jersey_num && playerFromPlayerId.jersey_num);
+	$: isValid = Boolean(playerFromToken && playerFromPlayerId);
 	$: updatePlayerFromToken(tokenId);
 	$: updatePlayerFromPlayerId(playerId);
 
 	async function updatePlayerFromToken(tokenId: number) {
-		playerFromToken = tokenId ? await loadPlayerFromSticker(tokenId) : initPlayer();
+		playerFromToken = null;
+		if (tokenId) playerFromToken = await loadPlayerFromSticker(tokenId);
 	}
 
 	async function updatePlayerFromPlayerId(playerId: number) {
-		playerFromPlayerId = playerId ? await loadPlayer(playerId) : initPlayer();
+		playerFromPlayerId = null;
+		if (playerId) playerFromPlayerId = await loadPlayer(playerId);
 	}
 
 	async function createExchange() {
 		if (!isValid) {
 			return;
 		}
-		if (!confirm(`¿Quiere intercambiar ${playerFromToken.name} por ${playerFromPlayerId.name}?`)) {
+		if (
+			!confirm(`¿Quiere intercambiar ${playerFromToken!.name} por ${playerFromPlayerId!.name}?`)
+		) {
 			return;
 		}
 
@@ -62,7 +66,9 @@
 				</option>
 			{/each}
 		</select>
-		<PlayerCard player={playerFromToken} {tokenId} />
+		{#if playerFromToken}
+			<PlayerCard player={playerFromToken} {tokenId} />
+		{/if}
 	</div>
 	<div class="col-sm-5 col-lg-12">
 		<strong>Por</strong>
@@ -73,6 +79,8 @@
 				</option>
 			{/each}
 		</select>
-		<PlayerCard player={playerFromPlayerId} />
+		{#if playerFromPlayerId}
+			<PlayerCard player={playerFromPlayerId} />
+		{/if}
 	</div>
 </div>

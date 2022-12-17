@@ -1,9 +1,9 @@
 <script lang="ts">
+	import type { Player } from '$lib/player';
 	import Card from './Card.svelte';
-	import { initPlayer } from '$lib/player';
 
 	export let tokenId: number = 0;
-	export let player = initPlayer();
+	export let player: Player;
 
 	$: imgAttr = {
 		src: player.photo,

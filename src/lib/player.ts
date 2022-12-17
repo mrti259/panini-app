@@ -12,15 +12,6 @@ const url =
 	'https://script.google.com/macros/s/AKfycbxMwXM-AptEHaarJ95tnh0hcY11kZN1zrmCnHjdnwEIyFl0ED4GDjKE9JlrhusIuk8E/exec';
 const cache = new Map<number, any>();
 
-export function initPlayer(): Player {
-	return {
-		name: 'Nombre',
-		nationality: 'Nacionalidad',
-		jersey_num: 0,
-		photo: photo
-	};
-}
-
 export async function loadPlayerFromSticker(stickerId: number) {
 	const web3Service = Web3Service.getInstance();
 	const playerId = await web3Service.getPlayerId(stickerId);
